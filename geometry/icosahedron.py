@@ -24,7 +24,7 @@ def get_icosahedron():
     ], dtype=np.float64)
 
     # Normalize to unit sphere
-    vertices /= np.linalg.norm(vertices[0])
+    vertices /= np.linalg.norm(vertices, axis=1, keepdims=True)
 
     faces = np.array([
         [0, 2, 8], [0, 8, 4], [0, 4, 6], [0, 6, 10], [0, 10, 2],
