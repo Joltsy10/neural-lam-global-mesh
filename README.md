@@ -2,7 +2,7 @@
 
 A from-scratch implementation of the core geometry pipeline for global weather forecasting with graph neural networks. Built as part of GSoC 2026 preparation for [Neural-LAM Project 4](https://github.com/mllam/neural-lam).
 
-This mini-project implements the full encode-process-decode graph construction pipeline — icosahedral mesh generation, G2M edges, M2G barycentric interpolation, and hierarchical level mappings — without any dependency on GraphCast utilities.
+This mini-project implements the full encode-process-decode graph construction pipeline: icosahedral mesh generation, G2M edges, M2G barycentric interpolation, and hierarchical level mappings, without any dependency on GraphCast utilities.
 
 ---
 
@@ -45,7 +45,7 @@ visualize.py         — 3D interactive visualizations using Plotly
 Constructs the base icosahedron from the golden ratio. Returns 12 vertices on the unit sphere and 20 triangular faces. All face normals verified to point outward.
 
 ### `subdivison.py`
-Subdivides each triangular face into 4 smaller triangles by inserting edge midpoints. Midpoints are normalized back onto the unit sphere and deduplicated across shared edges via a cache keyed on sorted edge pairs — failure to deduplicate silently breaks adjacency structure. After N levels: `10×4^N + 2` vertices, `20×4^N` faces.
+Subdivides each triangular face into 4 smaller triangles by inserting edge midpoints. Midpoints are normalized back onto the unit sphere and deduplicated across shared edges via a cache keyed on sorted edge pairs, failure to deduplicate silently breaks adjacency structure. After N levels: `10×4^N + 2` vertices, `20×4^N` faces.
 
 | Level | Vertices | Faces |
 |-------|----------|-------|
@@ -67,7 +67,7 @@ z = sin(lat)
 Inverse via `arcsin(z)` and `arctan2(y, x)`. Round-trip verified for non-pole points.
 
 ### `g2m.py`
-Builds Grid-to-Mesh edges. For each mesh node, queries a KDTree of grid node Cartesian coordinates for all grid nodes within a Euclidean radius `r`. Angular threshold θ converts to Euclidean via `r = 2*sin(θ/2)`. Every mesh node is verified to have at least one edge — full sphere coverage required.
+Builds Grid-to-Mesh edges. For each mesh node, queries a KDTree of grid node Cartesian coordinates for all grid nodes within a Euclidean radius `r`. Angular threshold θ converts to Euclidean via `r = 2*sin(θ/2)`. Every mesh node is verified to have at least one edge thus full sphere coverage required.
 
 ```python
 radius = angular_to_euclidean_radius(7.5)  # degrees
@@ -84,7 +84,7 @@ w2 = area(V1, P,  V3) / area(V1, V2, V3)
 w3 = area(V1, V2, P)  / area(V1, V2, V3)
 ```
 
-Weights are clamped and renormalized. At inference, decoding is a fixed weighted sum — no learned parameters:
+Weights are clamped and renormalized. At inference, decoding is a fixed weighted sum, so there are no learned parameters:
 
 ```python
 prediction[P] = w1*mesh[V1] + w2*mesh[V2] + w3*mesh[V3]
