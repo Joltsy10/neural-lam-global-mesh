@@ -1,5 +1,5 @@
 import numpy as np
-from icosahedron import get_icosahedron
+from geometry.icosahedron import get_icosahedron
 
 def subdivide(vertices, faces):
     """
