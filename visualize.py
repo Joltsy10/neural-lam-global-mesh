@@ -78,7 +78,6 @@ def plot_g2m_edges(grid_lat, grid_lon, mesh_vertices, src, dst,
         if m_idx not in seen_mesh:
             seen_mesh[m_idx] = g_idx
 
-    # Cap at max_edges for rendering performance
     selected = list(seen_mesh.items())[:max_edges]
 
     edge_x, edge_y, edge_z = [], [], []
@@ -121,6 +120,69 @@ def plot_g2m_edges(grid_lat, grid_lon, mesh_vertices, src, dst,
     fig.show()
 
 
+def plot_hierarchy(coarse_verts, fine_verts, mapping, title="Hierarchy Level"):
+    """
+    Plot two consecutive mesh levels with inter-level parent-child edges.
+
+    Coarse nodes are shown larger in orange.
+    Fine nodes are shown smaller in blue.
+    Gray lines connect each fine node to its parent coarse node.
+
+    Args:
+        coarse_verts: (N_coarse, 3) Cartesian coordinates of coarse mesh
+        fine_verts:   (N_fine, 3)   Cartesian coordinates of fine mesh
+        mapping:      dict from build_level_mapping with 'children_to_parent'
+        title:        plot title
+    """
+    children_to_parent = mapping['children_to_parent']
+
+    # Build edge lines: one line per fine node connecting it to its parent
+    edge_x, edge_y, edge_z = [], [], []
+    for fine_idx, coarse_idx in enumerate(children_to_parent):
+        f = fine_verts[fine_idx]
+        c = coarse_verts[coarse_idx]
+        # None separates disconnected line segments in Plotly
+        edge_x += [f[0], c[0], None]
+        edge_y += [f[1], c[1], None]
+        edge_z += [f[2], c[2], None]
+
+    fig = go.Figure(data=[
+        # Inter-level edges drawn first so nodes render on top
+        go.Scatter3d(
+            x=edge_x, y=edge_y, z=edge_z,
+            mode="lines",
+            line=dict(color="dimgray", width=3),
+            name="Parent-child edges"
+        ),
+        # Fine nodes — smaller, blue
+        go.Scatter3d(
+            x=fine_verts[:, 0], y=fine_verts[:, 1], z=fine_verts[:, 2],
+            mode="markers",
+            marker=dict(size=3, color="steelblue"),
+            name=f"Fine nodes ({len(fine_verts)})"
+        ),
+        # Coarse nodes — larger, orange, rendered on top
+        go.Scatter3d(
+            x=coarse_verts[:, 0], y=coarse_verts[:, 1], z=coarse_verts[:, 2],
+            mode="markers",
+            marker=dict(size=7, color="darkorange"),
+            name=f"Coarse nodes ({len(coarse_verts)})"
+        ),
+    ])
+
+    fig.update_layout(
+        title=title,
+        scene=dict(
+            xaxis_title="X",
+            yaxis_title="Y",
+            zaxis_title="Z",
+            aspectmode="cube"
+        )
+    )
+
+    fig.show()
+
+
 if __name__ == "__main__":
     vertices, faces = get_icosahedron()
 
@@ -135,6 +197,7 @@ if __name__ == "__main__":
     v4, f4 = refine(vertices, faces, 4)
     plot_mesh(v4, f4, title="Refined Mesh (Level 4)")
 
+    # G2M edges
     from geometry.g2m import build_g2m_edges, angular_to_euclidean_radius
 
     lat = np.linspace(-90, 90, 37)
@@ -150,3 +213,25 @@ if __name__ == "__main__":
 
     plot_g2m_edges(grid_lat, grid_lon, vertices, src, dst,
                    max_edges=2562, title="G2M Edges Level 4")
+
+    # Hierarchy visualization
+    from geometry.hierarchy import build_hierarchy
+
+    base_verts, base_faces = get_icosahedron()
+    levels, mappings = build_hierarchy(base_verts, base_faces, n_levels=4)
+
+    # Level 0→1: 12 coarse, 42 fine — easy to see individual connections
+    plot_hierarchy(
+        coarse_verts=levels[0][0],
+        fine_verts=levels[1][0],
+        mapping=mappings[0],
+        title="Hierarchy Level 0→1 (12 coarse, 42 fine nodes)"
+    )
+
+    # Level 3→4: 642 coarse, 2562 fine — shows the dense real-world structure
+    plot_hierarchy(
+        coarse_verts=levels[3][0],
+        fine_verts=levels[4][0],
+        mapping=mappings[3],
+        title="Hierarchy Level 3→4 (642 coarse, 2562 fine nodes)"
+    )
