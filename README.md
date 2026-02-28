@@ -136,8 +136,8 @@ Each geometry module has a `__main__` block with verification checks:
 
 ```bash
 python -m geometry.icosahedron   # vertex/face counts, unit sphere, outward normals
-python -m geometry.subdivison    # counts at each level
-python -m geometry.cartesion     # round-trip lat/lon verification
+python -m geometry.subdivision    # counts at each level
+python -m geometry.cartesian     # round-trip lat/lon verification
 python -m geometry.g2m           # edge counts, coverage check
 python -m geometry.m2g           # weights sum to 1, non-negative
 python -m geometry.hierarchy     # parent-child coverage both directions
