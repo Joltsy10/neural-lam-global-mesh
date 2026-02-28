@@ -103,7 +103,7 @@ Outputs `children_to_parent` (N_fine,) and `parent_to_children` (list of lists) 
 python visualize.py
 ```
 
-Produces five interactive 3D Plotly plots:
+Produces six interactive 3D Plotly plots:
 
 1. Base icosahedron (level 0)
 2. Refined mesh (level 2)
