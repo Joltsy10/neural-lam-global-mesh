@@ -29,8 +29,8 @@ This repo implements the geometry that makes this pipeline possible.
 ```
 geometry/
     icosahedron.py   — base icosahedron: 12 vertices, 20 faces, unit sphere
-    subdivison.py    — recursive subdivision with midpoint deduplication
-    cartesion.py     — lat/lon ↔ 3D Cartesian conversions on unit sphere
+    subdivision.py    — recursive subdivision with midpoint deduplication
+    cartesian.py     — lat/lon ↔ 3D Cartesian conversions on unit sphere
     g2m.py           — Grid-to-Mesh edges via radius query (KDTree)
     m2g.py           — Mesh-to-Grid barycentric interpolation weights
     hierarchy.py     — parent-child links between consecutive mesh levels
@@ -44,7 +44,7 @@ visualize.py         — 3D interactive visualizations using Plotly
 ### `icosahedron.py`
 Constructs the base icosahedron from the golden ratio. Returns 12 vertices on the unit sphere and 20 triangular faces. All face normals verified to point outward.
 
-### `subdivison.py`
+### `subdivision.py`
 Subdivides each triangular face into 4 smaller triangles by inserting edge midpoints. Midpoints are normalized back onto the unit sphere and deduplicated across shared edges via a cache keyed on sorted edge pairs, failure to deduplicate silently breaks adjacency structure. After N levels: `10×4^N + 2` vertices, `20×4^N` faces.
 
 | Level | Vertices | Faces |
@@ -55,7 +55,7 @@ Subdivides each triangular face into 4 smaller triangles by inserting edge midpo
 | 3     | 642      | 1280  |
 | 4     | 2562     | 5120  |
 
-### `cartesion.py`
+### `cartesian.py`
 Converts between lat/lon degrees and 3D Cartesian coordinates on the unit sphere:
 
 ```
