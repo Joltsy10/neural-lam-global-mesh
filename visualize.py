@@ -151,7 +151,7 @@ def plot_hierarchy(coarse_verts, fine_verts, mapping, title="Hierarchy Level"):
         go.Scatter3d(
             x=edge_x, y=edge_y, z=edge_z,
             mode="lines",
-            line=dict(color="dimgray", width=3),
+            line=dict(color="dimgray", width=2),
             name="Parent-child edges"
         ),
         # Fine nodes — smaller, blue
@@ -194,7 +194,7 @@ if __name__ == "__main__":
     plot_mesh(v2, f2, title="Refined Mesh (Level 2)")
 
     # Plot level 4 refinement
-    v4, f4 = refine(vertices, faces, 4)
+    v4, f4 = refine(vertices, faces, 6)
     plot_mesh(v4, f4, title="Refined Mesh (Level 4)")
 
     # G2M edges
@@ -218,7 +218,7 @@ if __name__ == "__main__":
     from geometry.hierarchy import build_hierarchy
 
     base_verts, base_faces = get_icosahedron()
-    levels, mappings = build_hierarchy(base_verts, base_faces, n_levels=4)
+    levels, mappings = build_hierarchy(base_verts, base_faces, n_levels=5)
 
     # Level 0→1: 12 coarse, 42 fine — easy to see individual connections
     plot_hierarchy(
@@ -230,8 +230,8 @@ if __name__ == "__main__":
 
     # Level 3→4: 642 coarse, 2562 fine — shows the dense real-world structure
     plot_hierarchy(
-        coarse_verts=levels[3][0],
-        fine_verts=levels[4][0],
-        mapping=mappings[3],
+        coarse_verts=levels[4][0],
+        fine_verts=levels[5][0],
+        mapping=mappings[4],
         title="Hierarchy Level 3→4 (642 coarse, 2562 fine nodes)"
     )
