@@ -1,0 +1,21 @@
+import torch
+
+m2m_ei = torch.load("graph_output/m2m_edge_index.pt")
+m2g_ei = torch.load("graph_output/m2g_edge_index.pt")
+g2m_ei = torch.load("graph_output/g2m_edge_index.pt")
+m2m_f  = torch.load("graph_output/m2m_features.pt")
+g2m_f  = torch.load("graph_output/g2m_features.pt")
+m2g_f  = torch.load("graph_output/m2g_features.pt")
+mesh_f = torch.load("graph_output/mesh_features.pt")
+
+print(type(m2m_ei), m2m_ei[0].shape)
+print(type(mesh_f), mesh_f[0].shape)
+print(type(g2m_ei), g2m_ei.shape)
+print(type(m2g_ei), m2g_ei.shape)
+print(m2m_f[0].shape)
+print(g2m_f.shape)
+print(m2g_f.shape)
+print("M2G edges / 3 == grid nodes:", m2g_ei.shape[1] / 3)
+print("Any nan in g2m features:", g2m_f.isnan().any())
+print("Any nan in m2m features:", m2m_f[0].isnan().any())
+print("Any nan in m2g features:", m2g_f.isnan().any())
