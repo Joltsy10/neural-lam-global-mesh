@@ -42,6 +42,10 @@ def plot_mesh(vertices, faces, title="Icosahedral Mesh"):
             aspectmode="cube"
         )
     )
+    fig.update_layout(
+    paper_bgcolor='white',
+    scene=dict(bgcolor='white')
+    )
 
     fig.show()
 
@@ -117,6 +121,10 @@ def plot_g2m_edges(grid_lat, grid_lon, mesh_vertices, src, dst,
         scene=dict(aspectmode="cube")
     )
 
+    fig.update_layout(
+    paper_bgcolor='white',
+    scene=dict(bgcolor='white')
+    )
     fig.show()
 
 
@@ -178,6 +186,10 @@ def plot_hierarchy(coarse_verts, fine_verts, mapping, title="Hierarchy Level"):
             zaxis_title="Z",
             aspectmode="cube"
         )
+    )
+    fig.update_layout(
+    paper_bgcolor='white',
+    scene=dict(bgcolor='white')
     )
 
     fig.show()
